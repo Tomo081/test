@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>Location AR - Current Location</title>
+    <title>GPS AR Coil</title>
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar.js"></script>
   </head>
@@ -16,34 +16,34 @@
 
       <a-entity
         id="magnemite"
-        gltf-model="./assets/magnemite"
-        scale="0.2 0.2 0.2"
+        gltf-model="./assets/magnemite/scene.gltf"
+        scale="0.5 0.5 0.5"
         rotation="0 180 0"
       >
       </a-entity>
     </a-scene>
 
     <script>
-      // 1. ユーザーの現在地を取得する
       window.onload = () => {
+        // 現在地を取得
         navigator.geolocation.getCurrentPosition(
           (position) => {
-            // 2. 成功したら緯度と経度を取り出す
             const lat = position.coords.latitude;
             const lng = position.coords.longitude;
 
-            // 3. コイルのエンティティを取得し、場所を設定する
-            const magnemite = document.querySelector('#magnemite');
-            magnemite.setAttribute('gps-entity-place', `latitude: ${lat}; longitude: ${lng};`);
+            // 少しだけ座標をずらす（自分と重ならないように北へ約10m）
+            const targetLat = lat + 0.0001; 
+            const targetLng = lng;
+
+            const entity = document.querySelector('#magnemite');
+            entity.setAttribute('gps-entity-place', `latitude: ${targetLat}; longitude: ${targetLng};`);
             
-            console.log(`設置完了！ 緯度: ${lat}, 経度: ${lng}`);
-            alert("あなたの足元にコイルを設置しました！");
+            console.log(`設置完了: ${targetLat}, ${targetLng}`);
           },
           (err) => {
-            console.error("位置情報の取得に失敗しました", err);
-            alert("位置情報の利用を許可してください。");
+            alert("位置情報が取得できませんでした。設定を確認してください。");
           },
-          { enableHighAccuracy: true } // 精度を高くする設定
+          { enableHighAccuracy: true }
         );
       };
     </script>
